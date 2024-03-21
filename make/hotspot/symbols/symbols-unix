@@ -127,6 +127,7 @@ JVM_GetProtectionDomain
 JVM_GetProxyUnpark
 JVM_GetSimpleBinaryName
 JVM_GetStackAccessControlContext
+Java_com_alibaba_sparklib_Library_getContextFast
 JVM_GetSystemPackage
 JVM_GetSystemPackages
 JVM_GetTemporaryDirectory

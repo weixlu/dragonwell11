@@ -1377,6 +1377,29 @@ class RegisterArrayForGC {
   }
 };
 
+JVM_ENTRY(jobject, Java_com_alibaba_sparklib_Library_getContextFast(JNIEnv *env, jclass cls))
+  JVMWrapper("Java_com_alibaba_sparklib_Library_getContextFast");
+
+  Handle privileged_context(thread, NULL);
+  if (thread->privileged_stack_top()) {
+    intptr_t* privileged_frame_id = thread->privileged_stack_top()->frame_id();
+    vframeStream vfst(thread);
+    for(; !vfst.at_end(); vfst.next()) {
+      if (privileged_frame_id == vfst.frame_id()) {
+        privileged_context = Handle(thread, thread->privileged_stack_top()->privileged_context());
+        if (privileged_context.is_null()) {
+          oop dummy = java_security_AccessControlContext::create(objArrayHandle(), true, Handle(thread, NULL), CHECK_NULL);
+          privileged_context = Handle(thread, dummy);
+        }
+        break;
+      }
+    }
+  }
+
+  oop result = privileged_context.not_null() ? privileged_context() :
+               java_lang_Thread::inherited_access_control_context(thread->threadObj());
+  return JNIHandles::make_local(env, result);
+JVM_END
 
 JVM_ENTRY(jobject, JVM_GetStackAccessControlContext(JNIEnv *env, jclass cls))
   JVMWrapper("JVM_GetStackAccessControlContext");

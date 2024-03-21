@@ -637,6 +637,9 @@ JNIEXPORT jobject JNICALL
 JVM_GetInheritedAccessControlContext(JNIEnv *env, jclass cls);
 
 JNIEXPORT jobject JNICALL
+Java_com_alibaba_sparklib_Library_getContextFast(JNIEnv *env, jclass cls);
+
+JNIEXPORT jobject JNICALL
 JVM_GetStackAccessControlContext(JNIEnv *env, jclass cls);
 
 /*
